@@ -12,6 +12,7 @@ import { CreateUser, User } from "../types/userType";
 dotenv.config();
 
 export const loginController = async (req: Request, res: Response) => {
+  console.log("wazzap maderadfas")
   try {
     const { identifier, password } = req.body;
 
@@ -19,15 +20,18 @@ export const loginController = async (req: Request, res: Response) => {
       res.status(400).json({ error: "Missing username or email or password" });
       return;
     }
+    
 
-    const user: User | null = await getUserModel(identifier);
+    const user: User = await getUserModel(identifier);
+
+    console.log("asdasdasdas",user)
     if (!user) {
       res.status(404).json({ error: "User not found" });
       return;
     }
     comparePasswordHelper(req, res, user);
   } catch (e) {
-    res.status(500).json({ error: `Internal Server Error: ${e}` });
+    res.status(500).json({ error: `Internal Server Errors: ${e}` });
     return;
   }
 };

@@ -24,6 +24,7 @@ export const getUserModel = (identifier:string):Promise<User | null> => {
     return new Promise((resolve, reject) => {
         const sql = "SELECT * FROM users WHERE username = ? OR email = ?";
         db.query(sql,[identifier, identifier], (err, data) => {
+            
             if(err){
                 return reject(err);
             }
@@ -39,7 +40,7 @@ export const getUserModel = (identifier:string):Promise<User | null> => {
                 console.log(user)
                 return resolve(user)
             }else{
-                return reject(err);
+                return resolve(null);
             }
         });
     });
