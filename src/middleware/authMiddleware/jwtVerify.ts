@@ -10,12 +10,14 @@ export const authenticateJWT = (req:Request, res:Response, next:NextFunction) =>
     const token = req.header('Authorization');
 
     if(!token) {
-        return res.status(401).json({error:'Unauthorized'})
+        res.status(401).json({error:'Unauthorized'})
+        return; 
     }
 
     jwt.verify(token.split(' ')[1], secretKey, (err,user) => {
         if (err) {
-            return res.status(403).json({error: "Forbidden"});
+            res.status(403).json({error: "Forbidden"});
+            return;
         }
 
         req.body.user = user;

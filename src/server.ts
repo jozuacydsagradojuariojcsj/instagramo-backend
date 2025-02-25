@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
-import authRoute from "./routes/authRoute"
+import authRoute from "./routes/authRoute";
+import postRoute from "./routes/postRoute";
 
 const app = express();
 
@@ -12,7 +13,8 @@ require('dotenv').config()
 const port = process.env.PORT;
 
 
-app.use('/auth',authRoute);
+app.use('/api/auth',authRoute);
+app.use('/api/posts',postRoute);
 
 app.listen(port, () => {console.log(`Server Running on Port:${port}`)});
 

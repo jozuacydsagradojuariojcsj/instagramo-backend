@@ -9,7 +9,7 @@ export const registerUserSchema = z.object({
 });
 
 export const updateUserSchema = z.object({
-    userId: z.number({required_error: "User ID is missing"}),
+    userid: z.number({required_error: "User ID is missing"}),
     username: z.string().min(5,"Username must be 5 characters or more").optional(),
     password: z.string().min(8, "Password must be 8 characters or more")
     .regex(/[A-Z]/, "Password must at least have one uppercase letter")
