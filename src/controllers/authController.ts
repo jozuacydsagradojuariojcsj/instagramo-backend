@@ -8,6 +8,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import { CreateUser, User } from "../types/userType";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -69,6 +70,27 @@ export const registerController = async (req: Request, res: Response) => {
   } catch (e) {
     console.log(e);
     res.status(500).json({ error: `Internal Server Error: ${e}` });
+    return;
+  }
+};
+
+export const refreshTokenController = (req: Request, res:Response) => {
+  if(req.cookies?.jwt) {
+    const refreshToken = req.cookies.jwt;
+    const refreshSecret = process.env.REFRESH_SECRET;
+
+    jwt.verify(refreshToken, refreshSecret, (err,user) => {
+        if (err) {
+          res.status(406).json({error: "Unauthorized"});
+          return; 
+        }else{
+          const accessToken = jwt.sign({userid:user.userid, identifier:user.identifier, roles:user.roles}, refreshSecret, {expiresIn:"1h"})
+          res.json({accessToken});
+          return; 
+        }
+      })
+  }else{
+    res.status(406).json({message:'Unauthorized'});
     return;
   }
 };

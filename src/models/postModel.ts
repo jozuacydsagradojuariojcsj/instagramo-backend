@@ -17,3 +17,15 @@ export const createPostModel = (values:CreatePosts) => {
     })
 
 }
+
+export const getAllPostModel = () => {
+    return new Promise((resolve,reject) => {
+        const sql = "SELECT * FROM posts"
+        db.query(sql,(err,data) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(data);
+        })
+    })
+}

@@ -4,12 +4,14 @@ import dotenv from "dotenv";
 import { User } from "../types/userType";
 
 dotenv.config();
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 
 
 
-const secretKey = process.env.JWT_SECRET;
+const accessSecret = process.env.ACCESS_SECRET;
+const refreshSecret = process.env.REFRESH_SECRET;
+
 
 export const comparePasswordHelper = (req:Request, res:Response, user:User ) => {
     bcrypt.compare(req.body.password, user.password, async (err, result) => {
@@ -18,11 +20,23 @@ export const comparePasswordHelper = (req:Request, res:Response, user:User ) => 
         }
 
         if (result) {
-            const token = jwt.sign({userid:user.userid, username:user.identifier, roles:user.roles},secretKey,{expiresIn:"1h"});
-            console.log(token)
-            return res.status(200).json({message: "Login Successful", user, token});
+            const accessToken = jwt.sign({userid:user.userid, identifier:user.identifier, roles:user.roles},accessSecret,{expiresIn:"1h"});
+            const refreshToken = jwt.sign({userid:user.userid, identifier:user.identifier, roles:user.roles},refreshSecret,{expiresIn:"7d"});
+
+            res.cookie('jwt', refreshToken, {
+                httpOnly: true,
+                sameSite:'none', secure: true,
+                maxAge: 24 * 60 * 60 * 1000
+            });
+            console.log("asdasd", refreshToken);
+            console.log(accessToken);
+            return res.status(200).json({message: "Login Successful", user,token: accessToken});
         }else{
             return res.status(401).json({error: `Incorrect Password, ${err}`});
         }
     });
 }
+
+
+
+

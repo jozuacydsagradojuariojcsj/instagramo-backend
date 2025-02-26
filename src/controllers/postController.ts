@@ -1,4 +1,4 @@
-import { createPostModel } from "../models/postModel";
+import { createPostModel, getAllPostModel } from "../models/postModel";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
 import { CreatePosts } from "../types/postType";
@@ -25,5 +25,14 @@ export const createPostController = async (req:Request, res:Response) => {
     }catch(e){
         res.status(500).json({error:`Internal Server Error ${e}`});
         return;
+    }
+}
+
+export const getAllPostController = async(res:Response) => {
+    try{
+        const posts = await getAllPostModel();
+        res.status(200).json(posts); 
+    }catch(e){
+        res.status(500).json({error:"Failed to retrieve posts", e});
     }
 }

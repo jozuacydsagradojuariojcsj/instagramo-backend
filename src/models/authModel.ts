@@ -34,6 +34,8 @@ export const getUserModel = (identifier:string):Promise<User | null> => {
                 const user: User = {
                     userid: dbUser.userid,
                     identifier: identifier,
+                    email:dbUser.email,
+                    username:dbUser.username,
                     password: dbUser.password,
                     roles: dbUser.roles
                 };
