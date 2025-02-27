@@ -20,6 +20,7 @@ export const authenticateJWT = (req:Request, res:Response, next:NextFunction) =>
             return;
         }
 
+        console.log("authenticateJWT",req.body)
         req.body.user = user;
         next();
     });

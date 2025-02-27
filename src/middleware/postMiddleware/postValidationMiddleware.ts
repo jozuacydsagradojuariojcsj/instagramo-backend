@@ -10,11 +10,11 @@ export const createPostValidation = (schema: z.ZodObject<any, any>) => {
     } catch (e) {
       if (e instanceof z.ZodError) {
         const errorMessages = e.errors.map((issue) => ({
-          message: `${issue.path.join(".")} is ${issue.message}`,
+          message: `${issue.path.join(".")} iss ${issue.message}`,
         }));
         res
           .status(StatusCodes.BAD_REQUEST)
-          .json({ error: "Invalid Data", details: errorMessages });
+          .json({ error: "Invalid Datas", details: errorMessages });
       } else {
         res
           .status(StatusCodes.INTERNAL_SERVER_ERROR)

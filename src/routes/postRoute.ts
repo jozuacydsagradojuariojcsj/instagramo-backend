@@ -3,9 +3,10 @@ import { createPostController } from "../controllers/postController";
 import { authenticateJWT } from "../middleware/authMiddleware/jwtVerify";
 import { createPostValidation } from "../middleware/postMiddleware/postValidationMiddleware";
 import { createPostsSchema } from "../schema/postSchema";
+import { postsUpload } from "../config/multerConfig";
 
 const router = express.Router();
 
-router.post('/create', authenticateJWT, createPostValidation(createPostsSchema), createPostController)
+router.post('/create', authenticateJWT, createPostValidation(createPostsSchema), postsUpload.fields([{name:"file",maxCount:5}]), createPostController)
 
 export default router;

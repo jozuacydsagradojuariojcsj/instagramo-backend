@@ -5,7 +5,7 @@ export const createPostModel = (values:CreatePosts) => {
     return new Promise((resolve, reject) => {
         const sql = "INSERT INTO posts (userid, file_path, caption) VALUES (?, ? ,?)";
 
-        const postValues = [values.userid, values.file_path, values.caption];
+        const postValues = [values.userid, JSON.stringify(values.file_path), values.caption];
         
         db.query(sql, postValues,(err,data) => {
             if(err) {

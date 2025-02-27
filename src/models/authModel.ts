@@ -39,7 +39,7 @@ export const getUserModel = (identifier:string):Promise<User | null> => {
                     password: dbUser.password,
                     roles: dbUser.roles
                 };
-                console.log(user)
+                console.log("maderfader",user)
                 return resolve(user)
             }else{
                 return resolve(null);

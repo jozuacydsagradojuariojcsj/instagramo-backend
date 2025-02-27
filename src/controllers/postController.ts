@@ -6,15 +6,31 @@ dotenv.config();
 
 export const createPostController = async (req:Request, res:Response) => {
     try{
-        const userid = req.body.userid;
-        const file_path = req.body.file_path;
-        const caption = req.body.caption;
+        console.log("Body", req.body);
+        console.log("Received Data", req.files);
 
         
+        const userid = parseInt(req.body.userid, 10);
+        console.log(userid)
+        const caption = req.body.caption;
+
+        if(isNaN(userid)){
+            res.status(400).json({error:"Invalid userid"});
+            return;
+        }
+
+        const uploadedFiles = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+        if (!uploadedFiles || !uploadedFiles["file"]) {
+            res.status(400).json({ error: "No files uploaded" });
+            return; 
+        }
+
+        const filePaths = uploadedFiles["file"].map(file => file.path);
 
         const postValue : CreatePosts = {
             userid,
-            file_path,
+            file_path: filePaths,
             caption
         };
 
@@ -35,4 +51,12 @@ export const getAllPostController = async(res:Response) => {
     }catch(e){
         res.status(500).json({error:"Failed to retrieve posts", e});
     }
+}
+
+export const uploadProfileController = (req:Request, res:Response) => {
+    if(!req.file) {
+        return res.status(400).json({error:"No profile pictures added"});
+    }
+
+    return res.status(201).json({message:"Profile Picture uploaded successfully",filePath:req.file.path});
 }
