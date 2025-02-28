@@ -6,9 +6,7 @@ dotenv.config();
 
 export const createPostController = async (req:Request, res:Response) => {
     try{
-        console.log("Body", req.body);
-        console.log("Received Data", req.files);
-
+        console.log("BodyController", req.body.user);
         
         const userid = parseInt(req.body.userid, 10);
         console.log(userid)
@@ -21,12 +19,12 @@ export const createPostController = async (req:Request, res:Response) => {
 
         const uploadedFiles = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-        if (!uploadedFiles || !uploadedFiles["file"]) {
+        if (!uploadedFiles || !uploadedFiles["file_path"]) {
             res.status(400).json({ error: "No files uploaded" });
             return; 
         }
 
-        const filePaths = uploadedFiles["file"].map(file => file.path);
+        const filePaths = uploadedFiles["file_path"].map(file => file.path);
 
         const postValue : CreatePosts = {
             userid,
@@ -35,11 +33,10 @@ export const createPostController = async (req:Request, res:Response) => {
         };
 
         await createPostModel(postValue);
-
         res.status(200).json({message: "Post Created Successfully"});
         return;
     }catch(e){
-        res.status(500).json({error:`Internal Server Error ${e}`});
+        res.status(500).json({error:`Internal Server Errorsss ${e}`});
         return;
     }
 }

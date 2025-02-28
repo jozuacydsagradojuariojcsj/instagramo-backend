@@ -7,6 +7,6 @@ import { postsUpload } from "../config/multerConfig";
 
 const router = express.Router();
 
-router.post('/create', authenticateJWT, createPostValidation(createPostsSchema), postsUpload.fields([{name:"file",maxCount:5}]), createPostController)
+router.post('/create', authenticateJWT, postsUpload.fields([{name:"file_path",maxCount:5}]),createPostValidation(createPostsSchema),  createPostController)
 
 export default router;

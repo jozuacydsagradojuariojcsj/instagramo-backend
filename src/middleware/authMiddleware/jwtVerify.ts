@@ -19,9 +19,9 @@ export const authenticateJWT = (req:Request, res:Response, next:NextFunction) =>
             res.status(403).json({error: "Forbidden"});
             return;
         }
-
-        console.log("authenticateJWT",req.body)
+        
         req.body.user = user;
+        console.log(req.body.user)
         next();
     });
 };
