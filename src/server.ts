@@ -19,6 +19,7 @@ const port = process.env.PORT;
 
 app.use('/api/auth',authRoute);
 app.use('/api/posts',postRoute);
+app.use('/uploads',express.static('public/uploads'))
 
 app.listen(port, () => {console.log(`Server Running on Port:${port}`)});
 

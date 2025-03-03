@@ -20,7 +20,7 @@ export const createPostModel = (values:CreatePosts) => {
 
 export const getAllPostModel = () => {
     return new Promise((resolve,reject) => {
-        const sql = "SELECT * FROM posts"
+        const sql = "SELECT users.username, posts.postid, posts.caption, posts.file_path, posts.created_at FROM users INNER JOIN posts ON users.userid = posts.userid;"
         db.query(sql,(err,data) => {
             if(err){
                 return reject(err);
