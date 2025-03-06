@@ -2,10 +2,12 @@ import z from "zod";
 
 export const registerUserSchema = z.object({
     email: z.string({required_error: "Email is required"}).email({message: "Invalid email format"}),
-    username: z.string({required_error: "Username is required"}).min(5, "Username must be at least 5 characters long"),
-    password: z.string({required_error: "Password is required"}).min(8, "Password must be at least 8 characters long")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, "Password must at least have one special Character")
+    first_name: z.string({required_error:"First Name is required"}),
+    last_name: z.string({required_error:"Last Name is required"}),
+    // username: z.string({required_error: "Username is required"}).min(5, "Username must be at least 5 characters long"),
+    // password: z.string({required_error: "Password is required"}).min(8, "Password must be at least 8 characters long")
+    // .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    // .regex(/[!@#$%^&*(),.?":{}|<>]/, "Password must at least have one special Character")
 });
 
 export const updateUserSchema = z.object({

@@ -1,9 +1,9 @@
 import {
   createUserModel,
-  findUserByUsername,
+  findUserByEmail,
   getUserModel,
 } from "../models/authModel";
-import { comparePasswordHelper } from "../helpers/authHelper";
+import { comparePasswordHelper, generateCredentials } from "../helpers/authHelper";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -39,27 +39,32 @@ export const loginController = async (req: Request, res: Response) => {
 
 export const registerController = async (req: Request, res: Response) => {
   try {
-    const username = req.body.username;
+    const first_name = req.body.first_name;
+    const last_name = req.body.last_name;
     const email = req.body.email;
-    const password = req.body.password;
 
-    if (!username || !email) {
+    if (!first_name || !last_name || !email) {
       res.status(500).json({ error: "Missing Username, Email or Password" });
       return;
     }
 
-    const user = await findUserByUsername(username, email);
+    const user = await findUserByEmail(email);
 
     if (user) {
-        res.status(409).json({ message: "Username or Email already exists" });
+        res.status(409).json({ message: "Email already exists" });
         return;
     } else {
+
+      const {username, password} = generateCredentials(first_name, last_name)
+
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const values: CreateUser = {
         username,
         password: hashedPassword,
         email,
+        first_name,
+        last_name
       };
 
       await createUserModel(values);
@@ -84,6 +89,7 @@ export const refreshTokenController = (req: Request, res:Response) => {
           res.status(406).json({error: "Unauthorized"});
           return; 
         }else{
+          console.log("User in JWT", user)
           const accessToken = jwt.sign({userid:user.userid, identifier:user.identifier, roles:user.roles}, refreshSecret, {expiresIn:"1h"})
           res.json({accessToken});
           return; 
