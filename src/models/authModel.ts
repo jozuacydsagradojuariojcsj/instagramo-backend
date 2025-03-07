@@ -3,8 +3,8 @@ import { db } from "../config/db";
 
 export const findUserByEmail = (email:string) => {
     return new Promise((resolve, reject) =>{
-        const sql = "SELECT * FROM users WHERE or email = ?";
-        db.query(sql, email, (err, data)=>{
+        const sql = "SELECT * FROM users WHERE email = ?";
+        db.query(sql, [email], (err, data)=>{
             if(err){
                 console.log(`Error on adminModel: ${err}`);
                 return reject(err);

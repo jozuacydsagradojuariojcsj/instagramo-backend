@@ -3,7 +3,7 @@ import {
   findUserByEmail,
   getUserModel,
 } from "../models/authModel";
-import { comparePasswordHelper, generateCredentials } from "../helpers/authHelper";
+import { comparePasswordHelper, generateCredentials, sendMail } from "../helpers/authHelper";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -54,6 +54,7 @@ export const registerController = async (req: Request, res: Response) => {
         res.status(409).json({ message: "Email already exists" });
         return;
     } else {
+      console.log("firstName:", first_name)
 
       const {username, password} = generateCredentials(first_name, last_name)
 
@@ -68,6 +69,7 @@ export const registerController = async (req: Request, res: Response) => {
       };
 
       await createUserModel(values);
+      await sendMail(username,password,email)
 
       res.status(201).json({ message: "User Created Successfully" });
       return;
@@ -100,3 +102,4 @@ export const refreshTokenController = (req: Request, res:Response) => {
     return;
   }
 };
+

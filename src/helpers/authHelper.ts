@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { User } from "../types/userType";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 import { NextFunction, Request, Response } from "express";
@@ -52,8 +53,37 @@ export const comparePasswordHelper = (
 };
 
 export const generateCredentials = (first_name: string, last_name: string) : {username:string, password:string} => {
-  const username = `${first_name.charAt[0].toUpperCase()}${last_name}`;
+  const username = `${first_name.charAt(0).toUpperCase()}${last_name}`;
   const password = Math.random().toString(36).slice(-8);
+  console.log("Password for user",password)
 
   return { username, password };
+};
+
+
+export const sendMail = async(username:string, password:string, to:string) => {
+  try{
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth:{
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      },
+    });
+  
+    const mailOptions = {
+      from: `"Instagramo" <${process.env.EMAIL_USER}>`,
+      to,
+      subject: "Insatgramo Username and Password",
+      text: `Greetings, This is your Insatgramo Username and Password. Username:${username} Password:${password}`
+    };
+  
+    const info = await transporter.sendMail(mailOptions);
+    console.log(info)
+  
+    return info;
+  }catch(e){
+    console.error("Error shiet",e);
+    throw error;
+  }
 };
