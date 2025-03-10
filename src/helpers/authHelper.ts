@@ -7,6 +7,7 @@ import nodemailer from "nodemailer";
 dotenv.config();
 import { NextFunction, Request, Response } from "express";
 import { error } from "console";
+import { findUserByUsername } from "../models/authModel";
 
 const accessSecret = process.env.ACCESS_SECRET;
 const refreshSecret = process.env.REFRESH_SECRET;
@@ -52,10 +53,21 @@ export const comparePasswordHelper = (
   });
 };
 
-export const generateCredentials = (first_name: string, last_name: string) : {username:string, password:string} => {
-  const username = `${first_name.charAt(0).toUpperCase()}${last_name}`;
+export const generateCredentials = async(first_name: string, last_name: string) : Promise<{username:string, password:string}> => {
+  let username = `${first_name.charAt(0).toUpperCase()}${last_name}`;
+  let counter = 1;
+  
+  const exists  = await findUserByUsername(username);
+
+  console.log("exists",exists)
+  if(exists){
+    console.log(`${counter}`)
+    username = `${first_name.charAt(0).toUpperCase()}${last_name}${counter}`
+    counter++
+    console.log(counter)
+  }
+
   const password = Math.random().toString(36).slice(-8);
-  console.log("Password for user",password)
 
   return { username, password };
 };
@@ -75,7 +87,7 @@ export const sendMail = async(username:string, password:string, to:string) => {
       from: `"Instagramo" <${process.env.EMAIL_USER}>`,
       to,
       subject: "Insatgramo Username and Password",
-      text: `Greetings, This is your Insatgramo Username and Password. Username:${username} Password:${password}`
+      text: `Greetings, This is your Insatgramo Username and Password. Username:${username} Password:${password}. If you cannot log in using your username, kindly use your email upon logging in. Thank you for using Insatgramo`
     };
   
     const info = await transporter.sendMail(mailOptions);

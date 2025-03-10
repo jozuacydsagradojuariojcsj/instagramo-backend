@@ -19,6 +19,22 @@ export const findUserByEmail = (email:string) => {
     });
 }
 
+export const findUserByUsername = (username:string) => {
+    return new Promise((resolve,reject) => {
+        const sql = "SELECT * FROM users WHERE username = ?";
+        db.query(sql,[username],(err,data)=> {
+            if(err){
+                return reject(err);
+            }
+            if(data.length > 0) {
+                return resolve(data);
+            }
+            console.log("null")
+            return resolve(null);
+        })
+    })
+}
+
 
 export const getUserModel = (identifier:string):Promise<User | null> => {
     return new Promise((resolve, reject) => {

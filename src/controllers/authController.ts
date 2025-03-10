@@ -56,7 +56,7 @@ export const registerController = async (req: Request, res: Response) => {
     } else {
       console.log("firstName:", first_name)
 
-      const {username, password} = generateCredentials(first_name, last_name)
+      const {username, password} = await generateCredentials(first_name, last_name)
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
