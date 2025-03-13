@@ -11,11 +11,13 @@ const io = new Server(server, {
     },
 });
 
-io.on("connecton",(socket => {
+io.on("connection",(socket => {
     console.log("WebSocket: A user connected", socket.id);
 
     socket.on("newStory",(message) => {
         console.log("updateStories", message)
+
+        socket.broadcast.emit("receive_message", message);
 
         io.emit("updateStories", message);
     });
@@ -29,6 +31,5 @@ io.on("connecton",(socket => {
     });
 }));
 
-server.listen(3000, () => {
-    console.log("Webscoket runnin on poert 3000")
-})
+
+export { server, io}

@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import authRoute from "./routes/authRoute";
 import postRoute from "./routes/postRoute";
 import storyRoute from "./routes/storyRoute";
+import { server } from "./services/webSocket";
 
 const app = express();
 
@@ -24,4 +25,6 @@ app.use('/api/story', storyRoute);
 app.use('/public/uploads',express.static('public/uploads'))
 
 app.listen(port, () => {console.log(`Server Running on Port:${port}`)});
+
+server.listen(3001, () => {console.log(`WS running on:3001`)});
 
