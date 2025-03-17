@@ -8,8 +8,9 @@ export const sendMessageValidationMiddleware = (schema:z.ZodObject<any,any>) => 
         try{
             
             if (!req.body.sender_id || !req.body.receiver_id || !req.body.message) {
-                return BadRequest(res, "Missing required fields");
-              }
+                BadRequest(res, "Missing required fields");
+                return; 
+            }
 
             const parsedSchema : CreateMessage = {
                 sender_id:req.body.sender_id,
@@ -32,7 +33,6 @@ export const sendMessageValidationMiddleware = (schema:z.ZodObject<any,any>) => 
                 InternalServerError(res,"Internal Server Error");
                 return ;
             }
-
         }
     }
 }

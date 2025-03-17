@@ -9,6 +9,10 @@ export const OK = (res:Response, message:string) => {
     return res.status(StatusCodes.OK).json({message:message});
 }
 
+export const Created = (res:Response, message:string) => {
+    return res.status(StatusCodes.CREATED).json({message:message})
+}
+
 export const InternalServerError = (res:Response, error:string) => {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error:error});
 }
