@@ -69,7 +69,7 @@ export const registerController = async (req: Request, res: Response) => {
       };
 
       await createUserModel(values);
-      await sendMail(username,password,email)
+      // await sendMail(username,password,email)
 
       res.status(201).json({ message: "User Created Successfully" });
       return;

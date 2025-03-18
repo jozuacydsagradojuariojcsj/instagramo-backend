@@ -9,24 +9,33 @@ export const messageController = async(req: Request, res:Response) => {
         const {message, sender_id, receiver_id}  = req.body;
         chat_room_id = req.params.id;
 
-
-
         if(!message){
             BadRequest(res, "Message is empty");
             return;
         }
-
+        
         if(!chat_room_id) {
             const chatRoomId = await createChatRoomsModel();
             console.log(`Chat rooms data: ${chatRoomId}`);
+
+            const newMessageValue: CreateMessage = {
+                sender_id,
+                receiver_id,
+                chat_room_id:chatRoomId.toString(),
+                message
+            }
+            await sendMessageModel(newMessageValue);
+        }else{
+            console.log("there is a chat room id")
+            const messageValue : CreateMessage = {
+                sender_id,
+                receiver_id,
+                chat_room_id,
+                message
+            }
+
+            await sendMessageModel(messageValue)
         }
-        
-        // const messageValue : CreateMessage = {
-        //     sender_id,
-        //     receiver_id,
-        //     chat_room_id,
-        //     message
-        // }
         Created(res, "Message Created");
         return;
     }catch(e){
