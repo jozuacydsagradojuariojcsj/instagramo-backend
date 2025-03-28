@@ -35,10 +35,16 @@ export const comparePasswordHelper = (
         refreshSecret,
         { expiresIn: "7d" }
       );
+      res.cookie("accessToken",accessToken, {
+        httpOnly: true, // Prevents JavaScript access
+        secure: true, // Only send over HTTPS
+        sameSite: "strict", // Helps prevent CSRF attacks
+        maxAge: 60 * 60 * 1000,
+      })
 
-      res.cookie("jwt", refreshToken, {
+      res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        sameSite: "none",
+        sameSite: "strict",
         secure: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
@@ -46,7 +52,7 @@ export const comparePasswordHelper = (
       console.log(accessToken);
       return res
         .status(200)
-        .json({ message: "Login Successful", user, token: accessToken });
+        .json({ message: "Login Successful", user });
     } else {
       return res.status(401).json({ error: `Incorrect Password, ${err}` });
     }
