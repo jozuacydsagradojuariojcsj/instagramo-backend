@@ -5,6 +5,7 @@ import authRoute from "./routes/authRoute";
 import postRoute from "./routes/postRoute";
 import storyRoute from "./routes/storyRoute";
 import messageRoute from "./routes/messageRoute";
+import followRoute from "./routes/followRoute";
 import { server } from "./services/webSocket";
 
 const app = express();
@@ -27,6 +28,7 @@ app.use('/api/auth',authRoute);
 app.use('/api/posts',postRoute);
 app.use('/api/story', storyRoute);
 app.use('/api/message', messageRoute);
+app.use('/api/follow',followRoute);
 app.use('/public/uploads',express.static('public/uploads'))
 
 app.listen(port, () => {console.log(`Server Running on Port:${port}`)});
