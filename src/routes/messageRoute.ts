@@ -6,6 +6,6 @@ import { createMessageSchema } from "../schema/messageSchema";
 
 const router = express.Router();
 
-router.post('/send/:id?', sendMessageValidationMiddleware(createMessageSchema), messageController)
+router.post('/send',authenticateJWT ,sendMessageValidationMiddleware(createMessageSchema), messageController)
 
 export default router;

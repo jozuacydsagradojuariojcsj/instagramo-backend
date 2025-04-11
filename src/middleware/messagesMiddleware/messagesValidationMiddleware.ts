@@ -7,13 +7,13 @@ export const sendMessageValidationMiddleware = (schema:z.ZodObject<any,any>) => 
     return (req:Request, res:Response, next:NextFunction) => {
         try{
             
-            if (!req.body.sender_id || !req.body.receiver_id || !req.body.message) {
+            if (!req.user.userid || !req.body.receiver_id || !req.body.message) {
                 BadRequest(res, "Missing required fields");
                 return; 
             }
 
             const parsedSchema : CreateMessage = {
-                sender_id:req.body.sender_id,
+                sender_id:req.user.userid,
                 receiver_id:req.body.receiver_id,
                 chat_room_id:req.params.id,
                 message:req.body.message,
@@ -30,7 +30,7 @@ export const sendMessageValidationMiddleware = (schema:z.ZodObject<any,any>) => 
                 BadRequest(res, `Invalid Data, ${errorMessages}`);
                 return; 
             }else{
-                InternalServerError(res,"Internal Server Error");
+                InternalServerError(res,`Internal Server Error: ${e}`);
                 return ;
             }
         }

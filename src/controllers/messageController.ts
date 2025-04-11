@@ -1,13 +1,20 @@
 import { Request, Response } from "express";
 import { BadRequest, Created, InternalServerError } from "../utils/responseStatus";
-import { CreateMessage } from "../types/messagesType";
-import { sendMessageModel, createChatRoomsModel } from "../models/messageModel";
+import { ChatRoomsID, CreateMessage, SenderReceiverID } from "../types/messagesType";
+import { sendMessageModel, createChatRoomsModel, selectChatRoomsModel } from "../models/messageModel";
 
 export const messageController = async(req: Request, res:Response) => {
     try{
-        let chat_room_id : string;
-        const {message, sender_id, receiver_id}  = req.body;
-        chat_room_id = req.params.id;
+        const sender_id = req.user.userid;
+        const {message, receiver_id}  = req.body;
+
+        const chatRoomValues : SenderReceiverID= {
+            sender_id,
+            receiver_id
+        };
+
+        let chat_room_id: ChatRoomsID = await selectChatRoomsModel(chatRoomValues)
+        console.log("CHTROOMID",chat_room_id)
 
         if(!message){
             BadRequest(res, "Message is empty");
@@ -21,7 +28,7 @@ export const messageController = async(req: Request, res:Response) => {
             const newMessageValue: CreateMessage = {
                 sender_id,
                 receiver_id,
-                chat_room_id:chatRoomId.toString(),
+                chat_room_id: chatRoomId.toString() || chatRoomId["id"],
                 message
             }
             await sendMessageModel(newMessageValue);
@@ -30,7 +37,7 @@ export const messageController = async(req: Request, res:Response) => {
             const messageValue : CreateMessage = {
                 sender_id,
                 receiver_id,
-                chat_room_id,
+                chat_room_id:chat_room_id["id"].toString(),
                 message
             }
 
@@ -39,7 +46,7 @@ export const messageController = async(req: Request, res:Response) => {
         Created(res, "Message Created");
         return;
     }catch(e){
-        InternalServerError(res, `Server Error: ${e}`);
+        InternalServerError(res, `Server Error: ${e}`); 
         return;
     }
 }
