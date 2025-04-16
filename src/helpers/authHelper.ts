@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { User } from "../types/userType";
 import nodemailer from "nodemailer";
-
 dotenv.config();
 import { NextFunction, Request, Response } from "express";
 import { error } from "console";
@@ -74,6 +73,7 @@ export const generateCredentials = async(first_name: string, last_name: string) 
   }
 
   const password = Math.random().toString(36).slice(-8);
+  console.log(`Username: ${username}, Password: ${password}`)
 
   return { username, password };
 };

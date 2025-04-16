@@ -25,7 +25,7 @@ export const followerController = async(req:Request, res:Response) => {
         InternalServerError(res, `Server Error ${e}`);
         return;
     }
-}
+};
 
 export const unfollowController = async(req:Request, res:Response) => {
     try{
@@ -48,4 +48,4 @@ export const unfollowController = async(req:Request, res:Response) => {
         InternalServerError(res, `Server Error ${e}`);
         return;
     }
-}
+};
