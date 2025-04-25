@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import { Request, Response } from "express";
 import { BadRequest, Created, InternalServerError, OK } from "../utils/responseStatus";
 import { FollowType } from "../types/followType";
