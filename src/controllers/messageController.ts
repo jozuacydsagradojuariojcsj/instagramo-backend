@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { BadRequest, Created, InternalServerError } from "../utils/responseStatus";
+import { BadRequest, Created, InternalServerError, OK } from "../utils/responseStatus";
 import { ChatRoomsID, CreateMessage, SenderReceiverID } from "../types/messagesType";
-import { sendMessageModel, createChatRoomsModel, selectChatRoomsModel } from "../models/messageModel";
+import { sendMessageModel, createChatRoomsModel, selectChatRoomsModel, getMessageModel } from "../models/messageModel";
 
-export const messageController = async(req: Request, res:Response) => {
+export const createMessageController = async(req: Request, res:Response) => {
     try{
         const sender_id = req.user.userid;
         const {message, receiver_id}  = req.body;
@@ -47,6 +47,35 @@ export const messageController = async(req: Request, res:Response) => {
         return;
     }catch(e){
         InternalServerError(res, `Server Error: ${e}`); 
+        return;
+    }
+}
+
+export const getMessageController = async(req:Request, res:Response) => {
+    try{
+        const sender_id = req.user.userid;
+        const receiver_id = req.body.receiver_id;
+        if(!receiver_id || !sender_id){
+            BadRequest(res, "No Sender or Receiver ID");
+            return;
+        }
+
+        const values : SenderReceiverID = {
+            sender_id,
+            receiver_id,
+        }
+
+        const chatRooms : ChatRoomsID = await selectChatRoomsModel(values);
+        if(!chatRooms){
+            BadRequest(res, "No ChatRooms");
+            return;
+        }
+
+        const messages = await getMessageModel(chatRooms["id"].toString());
+        OK(res, messages)
+        return;
+    }catch (e) {
+        InternalServerError(res, `Server Error ${e}`)
         return;
     }
 }

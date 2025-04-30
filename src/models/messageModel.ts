@@ -1,4 +1,4 @@
-import { SenderReceiverID, CreateMessage, ChatRoomsID } from "../types/messagesType";
+import { SenderReceiverID, CreateMessage, ChatRoomsID, GetMessage } from "../types/messagesType";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../config/db";
 import { resolve } from "path";
@@ -13,6 +13,20 @@ export const sendMessageModel = (values:CreateMessage) => {
             return resolve(data);
         });
     });
+}
+
+export const getMessageModel = (values:ChatRoomsID):Promise<GetMessage> => {
+    return new Promise((resolve, reject) => {
+        console.log(values)
+        const sql = "SELECT * FROM messages WHERE chat_room_id = ?";
+        const chatRoomsId = [values]
+        db.query(sql,chatRoomsId,(err,data) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(data);
+        })
+    })
 }
 
 export const createChatRoomsModel = () => {

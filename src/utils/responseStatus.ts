@@ -5,7 +5,7 @@ export const BadRequest = (res:Response, error:string) => {
     return res.status(StatusCodes.BAD_REQUEST).json({error:error});
 }
 
-export const OK = (res:Response, message:string) => {
+export const OK = (res:Response, message:string | object) => {
     return res.status(StatusCodes.OK).json({message:message});
 }
 

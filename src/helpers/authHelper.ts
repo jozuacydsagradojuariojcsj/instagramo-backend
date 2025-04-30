@@ -22,6 +22,8 @@ export const comparePasswordHelper = (
         .status(500)
         .json({ error: `Error Verifying Password, ${err}` });
     }
+    
+
 
     if (result) {
       const accessToken = jwt.sign(
