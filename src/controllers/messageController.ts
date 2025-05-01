@@ -54,7 +54,7 @@ export const createMessageController = async(req: Request, res:Response) => {
 export const getMessageController = async(req:Request, res:Response) => {
     try{
         const sender_id = req.user.userid;
-        const receiver_id = req.body.receiver_id;
+        const receiver_id = Number(req.params.receiverId);
         if(!receiver_id || !sender_id){
             BadRequest(res, "No Sender or Receiver ID");
             return;

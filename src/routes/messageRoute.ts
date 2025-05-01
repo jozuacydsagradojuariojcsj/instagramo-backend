@@ -7,5 +7,5 @@ import { createMessageSchema } from "../schema/messageSchema";
 const router = express.Router();
 
 router.post('/send',authenticateJWT ,sendMessageValidationMiddleware(createMessageSchema), createMessageController)
-router.get('/getmessage',authenticateJWT, getMessageController);
+router.get('/getmessage/:receiverId', getMessageController);
 export default router;
