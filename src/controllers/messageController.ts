@@ -72,9 +72,11 @@ export const getMessageController = async(req:Request, res:Response) => {
         }
 
         const messages = await getMessageModel(chatRooms["id"].toString());
+        console.log(messages)
         OK(res, messages)
         return;
     }catch (e) {
+        console.log(e);
         InternalServerError(res, `Server Error ${e}`)
         return;
     }

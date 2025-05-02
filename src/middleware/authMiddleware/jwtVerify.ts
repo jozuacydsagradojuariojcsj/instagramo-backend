@@ -11,15 +11,18 @@ export const authenticateJWT = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.header("Authorization");
+  const token = req.cookies.accessToken;
+  console.log("accesToken from frontend",token)
 
   if (!token) {
     res.status(401).json({ error: "Unauthorized" });
     return;
   }
 
-  jwt.verify(token.split(" ")[1], secretKey, (err, user) => {
+  jwt.verify(token, secretKey, (err, user) => {
     if (err) {
+      console.log(token)
+      console.log(err)
       res.status(403).json({ error: "Forbidden" });
       return;
     }
