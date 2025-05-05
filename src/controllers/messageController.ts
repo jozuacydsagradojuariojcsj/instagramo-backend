@@ -67,7 +67,7 @@ export const getMessageController = async(req:Request, res:Response) => {
 
         const chatRooms : ChatRoomsID = await selectChatRoomsModel(values);
         if(!chatRooms){
-            BadRequest(res, "No ChatRooms");
+            OK(res, []);
             return;
         }
 
