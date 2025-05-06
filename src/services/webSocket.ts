@@ -18,17 +18,17 @@ const io = new Server(server, {
 });
 
 io.on("connection",(socket => {
-    const token = socket.handshake.auth.token;
+    // const token = socket.handshake.auth.token;
 
-    jwt.verify(token, secretKey, (err,decoded) => {
-        if(err){
-            console.log("Invalid Token, disconnecting socket...");
-            socket.disconnect();
-        } else {
-            console.log("User Connected")
-            console.log("WebSocket: A user connected", socket.id);
-        }
-    })
+    // jwt.verify(token, secretKey, (err,decoded) => {
+    //     if(err){
+    //         console.log("Invalid Token, disconnecting socket...");
+    //         socket.disconnect();
+    //     } else {
+    //         console.log("User Connected")
+    //         console.log("WebSocket: A user connected", socket.id);
+    //     }
+    // })
 
     socket.on("newStory",(message) => {
         console.log("updateStories", message)
@@ -44,6 +44,11 @@ io.on("connection",(socket => {
 
     socket.on("disconnect", () => {
         console.log("User Disconnected:", socket.id)
+    });
+
+    socket.on("join_room",(roomId) => {
+        socket.join(roomId);
+        console.log(`User joined roomID:${roomId}`)
     });
 }));
 

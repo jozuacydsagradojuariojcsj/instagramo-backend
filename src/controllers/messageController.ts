@@ -2,11 +2,13 @@ import { Request, Response } from "express";
 import { BadRequest, Created, InternalServerError, OK } from "../utils/responseStatus";
 import { ChatRoomsID, CreateMessage, SenderReceiverID } from "../types/messagesType";
 import { sendMessageModel, createChatRoomsModel, selectChatRoomsModel, getMessageModel } from "../models/messageModel";
+import { emitNewMessage } from "../services/webSocketServices/messageSocket";
 
 export const createMessageController = async(req: Request, res:Response) => {
     try{
         const sender_id = req.user.userid;
         const {message, receiver_id}  = req.body;
+        
 
         const chatRoomValues : SenderReceiverID= {
             sender_id,
@@ -31,6 +33,7 @@ export const createMessageController = async(req: Request, res:Response) => {
                 chat_room_id: chatRoomId.toString() || chatRoomId["id"],
                 message
             }
+            await emitNewMessage(newMessageValue || null)
             await sendMessageModel(newMessageValue);
         }else{
             console.log("there is a chat room id")
@@ -40,7 +43,7 @@ export const createMessageController = async(req: Request, res:Response) => {
                 chat_room_id:chat_room_id["id"].toString(),
                 message
             }
-
+            await emitNewMessage(messageValue || null)
             await sendMessageModel(messageValue)
         }
         Created(res, "Message Created");
