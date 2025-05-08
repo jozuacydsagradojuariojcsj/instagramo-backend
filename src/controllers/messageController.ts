@@ -17,6 +17,7 @@ export const createMessageController = async(req: Request, res:Response) => {
                 chat_room_id:chat_room_id.toString(),
                 message
             }
+            console.log("controller",messageValue);
             await emitNewMessage(messageValue || null)
             await sendMessageModel(messageValue)
         }else{
@@ -27,6 +28,7 @@ export const createMessageController = async(req: Request, res:Response) => {
                 chat_room_id: chatRoomId.toString() || chatRoomId["id"],
                 message
             }
+            console.log("controller",newMessageValue)
             await emitNewMessage(newMessageValue || null)
             await sendMessageModel(newMessageValue);
         }
@@ -59,7 +61,6 @@ export const getMessageController = async(req:Request, res:Response) => {
         }
 
         const messages = await getMessageModel(chatRooms["id"].toString());
-        console.log(messages)
         OK(res, messages)
         return;
     }catch (e) {

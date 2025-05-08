@@ -46,8 +46,8 @@ export const createChatRoomsModel = () => {
 
 export const selectChatRoomsModel = (values:SenderReceiverID):Promise<ChatRoomsID|null> => {
     return new Promise ((resolve,reject) => {
-        const sql = "SELECT chat_rooms.id FROM chat_rooms JOIN messages on chat_rooms.id = messages.chat_room_id WHERE messages.sender_id = ? and messages.receiver_id = ?";
-        const chatRoomValues = [values.sender_id, values.receiver_id];
+        const sql = "SELECT chat_room_id FROM messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) LIMIT 1";
+        const chatRoomValues = [values.sender_id, values.receiver_id, values.receiver_id, values.sender_id];
         db.query(sql, chatRoomValues, (err,data) => {
             if(err){
                 console.log(`Error on selectChatRoomsModel: ${err}`)
