@@ -3,7 +3,7 @@ import http from "http";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { Server } from "socket.io";
-import cookie from "cookie";
+import * as Cookie from "cookie";
 dotenv.config();
 
 const secretKey = process.env.ACCESS_SECRET;
@@ -18,51 +18,83 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  const rawCookie = socket.handshake.headers.cookie;
+io.use((socket, next) => {
+  const cookie = socket.handshake.headers.cookie;
 
-  if (rawCookie) {
-    console.log("cookiewebsocket", rawCookie);
-    const parsedCookie = cookie.parse(rawCookie);
-    console.log("Parsed keys:", Object.keys(parsedCookie));
-    console.log(parsedCookie);
-    
-  }else{
-    console.error("User Unauthorized");
+  if(!cookie) {
+    console.error("No Cookies");
+    return;
   }
 
-  // const token = socket.handshake.auth.token;
+  const parsedCookie = Cookie.parse(cookie);
 
-  // jwt.verify(token, secretKey, (err,decoded) => {
-  //     if(err){
-  //         console.log("Invalid Token, disconnecting socket...");
-  //         socket.disconnect();
-  //     } else {
-  //         console.log("User Connected")
-  //         console.log("WebSocket: A user connected", socket.id);
-  //     }
-  // })
+  const accessToken = parsedCookie["accessToken"];
 
-  socket.on("newStory", (message) => {
-    console.log("updateStories", message);
+  if (!accessToken) {
+    console.error("No access token found in cookies");
+    return;
+  }
 
-    socket.broadcast.emit("receive_message", message);
-
-    io.emit("updateStories", message);
+  jwt.verify(accessToken, process.env.ACCESS_SECRET, (err,decoded) => {
+    if(err){
+      console.error("No Websocket For U!")
+    }
+    next();
   });
+});
 
-  socket.on("removeStory", (storyId) => {
-    io.emit("deleteStory", storyId); // Remove expired story
-  });
 
-  socket.on("disconnect", () => {
-    console.log("User Disconnected:", socket.id);
+var users = [];
+io.on("connection",(socket) => {
+
+  socket.on("connected",(userid) => {
+    users[userid] = socket.id;
   });
 
   socket.on("join_room", (roomId) => {
     socket.join(roomId);
     console.log(`User joined roomID:${roomId}`);
   });
+
+  socket.on("disconnect", () => {
+    console.log("User Disconnected:", socket.id);
+  });
+
 });
+
+// io.on("connection", (socket) => {
+//   // const token = socket.handshake.auth.token;
+
+//   // jwt.verify(token, secretKey, (err,decoded) => {
+//   //     if(err){
+//   //         console.log("Invalid Token, disconnecting socket...");
+//   //         socket.disconnect();
+//   //     } else {
+//   //         console.log("User Connected")
+//   //         console.log("WebSocket: A user connected", socket.id);
+//   //     }
+//   // })
+
+//   socket.on("newStory", (message) => {
+//     console.log("updateStories", message);
+
+//     socket.broadcast.emit("receive_message", message);
+
+//     io.emit("updateStories", message);
+//   });
+
+//   socket.on("removeStory", (storyId) => {
+//     io.emit("deleteStory", storyId); // Remove expired story
+//   });
+
+//   socket.on("disconnect", () => {
+//     console.log("User Disconnected:", socket.id);
+//   });
+
+//   socket.on("join_room", (roomId) => {
+//     socket.join(roomId);
+//     console.log(`User joined roomID:${roomId}`);
+//   });
+// });
 
 export { server, io };
